@@ -117,7 +117,7 @@
 		  </div>
 		</div> 
 		
-		<el-dialog title="添加任务" v-model="dialogFormVisible">
+		<el-dialog title="添加任务" :visible.sync="dialogFormVisible">
 		  <el-form :model="form">
 		    <el-form-item label="任务名称" label-width="120px" style="width:35%">
 		      <el-input v-model="form.jobName" auto-complete="off"></el-input>
@@ -135,7 +135,7 @@
 		  </div>
 		</el-dialog>
 		
-		<el-dialog title="修改任务" v-model="updateFormVisible">
+		<el-dialog title="修改任务" :visible.sync="updateFormVisible">
 		  <el-form :model="updateform">
 		    <el-form-item label="表达式" label-width="120px" style="width:35%">
 		      <el-input v-model="updateform.cronExpression" auto-complete="off"></el-input>
