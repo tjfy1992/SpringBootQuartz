@@ -10,13 +10,12 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +35,10 @@ public class JobController
 	@Autowired
 	private IJobAndTriggerService iJobAndTriggerService;
 	
+	//加入Qulifier注解，通过名称注入bean
+	@Autowired @Qualifier("Scheduler")
+	private Scheduler scheduler;
+	
 	private static Logger log = LoggerFactory.getLogger(JobController.class);  
 	
 
@@ -47,15 +50,10 @@ public class JobController
 		addJob(jobClassName, jobGroupName, cronExpression);
 	}
 	
-	public static void addJob(String jobClassName, String jobGroupName, String cronExpression)throws Exception{
-		
-		// 通过SchedulerFactory获取一个调度器实例  
-		SchedulerFactory sf = new StdSchedulerFactory();      
-          
-		Scheduler sched = sf.getScheduler();  
+	public void addJob(String jobClassName, String jobGroupName, String cronExpression)throws Exception{
         
         // 启动调度器  
-		sched.start(); 
+		scheduler.start(); 
 		
 		//构建job信息
 		JobDetail jobDetail = JobBuilder.newJob(getClass(jobClassName).getClass()).withIdentity(jobClassName, jobGroupName).build();
@@ -68,7 +66,7 @@ public class JobController
             .withSchedule(scheduleBuilder).build();
         
         try {
-        	sched.scheduleJob(jobDetail, trigger);
+        	scheduler.scheduleJob(jobDetail, trigger);
             
         } catch (SchedulerException e) {
             System.out.println("创建定时任务失败"+e);
@@ -83,12 +81,9 @@ public class JobController
 		jobPause(jobClassName, jobGroupName);
 	}
 	
-	public static void jobPause(String jobClassName, String jobGroupName) throws Exception
-	{
-        // 通过SchedulerFactory获取一个调度器实例  
-		SchedulerFactory sf = new StdSchedulerFactory();               
-		Scheduler sched = sf.getScheduler();  	
-		sched.pauseJob(JobKey.jobKey(jobClassName, jobGroupName));
+	public void jobPause(String jobClassName, String jobGroupName) throws Exception
+	{	
+		scheduler.pauseJob(JobKey.jobKey(jobClassName, jobGroupName));
 	}
 	
 
@@ -98,12 +93,9 @@ public class JobController
 		jobresume(jobClassName, jobGroupName);
 	}
 	
-	public static void jobresume(String jobClassName, String jobGroupName) throws Exception
+	public void jobresume(String jobClassName, String jobGroupName) throws Exception
 	{
-		 // 通过SchedulerFactory获取一个调度器实例  
-		SchedulerFactory sf = new StdSchedulerFactory();               
-		Scheduler sched = sf.getScheduler(); 
-		sched.resumeJob(JobKey.jobKey(jobClassName, jobGroupName));
+		scheduler.resumeJob(JobKey.jobKey(jobClassName, jobGroupName));
 	}
 	
 	
@@ -115,11 +107,9 @@ public class JobController
 		jobreschedule(jobClassName, jobGroupName, cronExpression);
 	}
 	
-	public static void jobreschedule(String jobClassName, String jobGroupName, String cronExpression) throws Exception
+	public void jobreschedule(String jobClassName, String jobGroupName, String cronExpression) throws Exception
 	{				
 		try {
-			SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-			Scheduler scheduler = schedulerFactory.getScheduler();
 			TriggerKey triggerKey = TriggerKey.triggerKey(jobClassName, jobGroupName);
 			// 表达式调度构建器
 			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
@@ -144,14 +134,11 @@ public class JobController
 		jobdelete(jobClassName, jobGroupName);
 	}
 	
-	public static void jobdelete(String jobClassName, String jobGroupName) throws Exception
+	public void jobdelete(String jobClassName, String jobGroupName) throws Exception
 	{		
-		// 通过SchedulerFactory获取一个调度器实例  
-		SchedulerFactory sf = new StdSchedulerFactory();               
-		Scheduler sched = sf.getScheduler(); 
-		sched.pauseTrigger(TriggerKey.triggerKey(jobClassName, jobGroupName));
-        sched.unscheduleJob(TriggerKey.triggerKey(jobClassName, jobGroupName));
-		sched.deleteJob(JobKey.jobKey(jobClassName, jobGroupName));				
+		scheduler.pauseTrigger(TriggerKey.triggerKey(jobClassName, jobGroupName));
+		scheduler.unscheduleJob(TriggerKey.triggerKey(jobClassName, jobGroupName));
+		scheduler.deleteJob(JobKey.jobKey(jobClassName, jobGroupName));				
 	}
 	
 	
@@ -173,4 +160,3 @@ public class JobController
 	
 	
 }
-
