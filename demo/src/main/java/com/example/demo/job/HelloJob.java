@@ -1,10 +1,10 @@
 package com.example.demo.job;
 
-import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -15,14 +15,13 @@ import java.util.Date;
  * 设置 @DisallowConcurrentExecution 以后程序会等任务执行完毕以后再去执行，这样就不会再启用新的线程执行
  * 资料：http://www.cnblogs.com/daxin/archive/2013/05/27/3101972.html
  */
-@DisallowConcurrentExecution
+@Component
 public class HelloJob implements BaseJob {  
   
     private static Logger log = LoggerFactory.getLogger(HelloJob.class);  
     
     @Override
-    public void execute(JobExecutionContext context)  
-        throws JobExecutionException {  
+    public void execute(JobExecutionContext context) throws JobExecutionException {  
         log.info("Hello Job执行时间: " + new Date());  
           
     }  
