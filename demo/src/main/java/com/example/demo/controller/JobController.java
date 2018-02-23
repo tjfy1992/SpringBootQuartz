@@ -166,7 +166,7 @@ public class JobController {
 	@GetMapping(value = "/queryjob")
 	public Map<String, Object> queryjob(@RequestParam(value = "pageNum") Integer pageNum, @RequestParam(value = "pageSize") Integer pageSize) {
 		PageInfo<JobAndTrigger> jobAndTrigger = iJobAndTriggerService.getJobAndTriggerDetails(pageNum, pageSize);
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("JobAndTrigger", jobAndTrigger);
 		map.put("number", jobAndTrigger.getTotal());
 		return map;

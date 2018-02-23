@@ -18,16 +18,12 @@ import java.util.Date;
 @DisallowConcurrentExecution
 public class HelloJob implements BaseJob {  
   
-    private static Logger _log = LoggerFactory.getLogger(HelloJob.class);  
-     
-    public HelloJob() {  
-          
-    }  
+    private static Logger log = LoggerFactory.getLogger(HelloJob.class);  
     
     @Override
     public void execute(JobExecutionContext context)  
         throws JobExecutionException {  
-        _log.info("Hello Job执行时间: " + new Date());  
+        log.info("Hello Job执行时间: " + new Date());  
           
     }  
 }  

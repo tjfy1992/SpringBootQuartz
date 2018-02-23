@@ -18,7 +18,7 @@ import java.util.Date;
 @DisallowConcurrentExecution
 public class NewJob implements BaseJob {
 
-	private static Logger _log = LoggerFactory.getLogger(NewJob.class);
+	private static Logger log = LoggerFactory.getLogger(NewJob.class);
 
 	public NewJob() {
 
@@ -27,7 +27,7 @@ public class NewJob implements BaseJob {
 	@Override
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
-		_log.info("New Job执行时间: " + new Date());
+		log.info("New Job执行时间: " + new Date());
 
 	}
 }  
