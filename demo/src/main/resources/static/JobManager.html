@@ -93,6 +93,11 @@
 		          
 		        <el-button
 		          size="small"
+		          type="info"
+		          @click="handleExecuteOnce(scope.$index, scope.row)">立即执行一次</el-button>
+		          
+		        <el-button
+		          size="small"
 		          type="danger"
 		          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
 		          
@@ -229,6 +234,15 @@
 		        //恢复任务
 		        handleResume: function(index, row){
 		        	this.$http.post('job/resumejob',{"jobClassName":row.job_NAME,"jobGroupName":row.job_GROUP},{emulateJSON: true}).then(function(res){
+						this.loadData( this.currentPage, this.pagesize);
+		            },function(){
+		                console.log('failed');
+		            });
+		        },
+		        
+		        //立即执行一次
+			    handleExecuteOnce: function(index, row){
+		        	this.$http.post('job/executeOnceJob',{"jobClassName":row.job_NAME,"jobGroupName":row.job_GROUP},{emulateJSON: true}).then(function(res){
 						this.loadData( this.currentPage, this.pagesize);
 		            },function(){
 		                console.log('failed');
